@@ -1,0 +1,32 @@
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+output.elasticsearch:
+  hosts: ['elasticsearch:9200']
+  protocol: "http"
+  username: elastic
+  password: "${ELASTIC_PASSWORD}"
+
+setup.kibana:
+  host: "http://kibana:5601"
+  username: elastic
+  password: "${ELASTIC_PASSWORD}"
+  protocol: "http"
+
+metricbeat.modules:
+
+  #---------------------------- Docker Module ---------------------------
+  - module: docker
+    metricsets:
+      - "container"
+      - "cpu"
+      - "diskio"
+      - "healthcheck"
+      - "info"
+      - "image"
+      - "memory"
+      - "network"
+    hosts: ["unix:///var/run/docker.sock"]
+    period: 10s
+    enabled: true

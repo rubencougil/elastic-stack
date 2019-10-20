@@ -1,0 +1,24 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+filebeat.inputs:
+  - type: log
+    enabled: true
+    input_type: log
+    json.message_key: log
+    json.keys_under_root: false
+    paths:
+      - /var/log/*.log
+
+output.elasticsearch:
+  hosts: ['elasticsearch:9200']
+  protocol: "http"
+  username: elastic
+  password: "${ELASTIC_PASSWORD}"
+
+setup.kibana:
+  host: "http://kibana:5601"
+  username: elastic
+  password: "${ELASTIC_PASSWORD}"
+  protocol: "http"
