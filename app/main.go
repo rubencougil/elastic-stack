@@ -2,17 +2,26 @@ package main
 
 import (
 	"github.com/pkg/errors"
-	"github.com/rubencougil/elastic/app/logger"
+	"github.com/sirupsen/logrus"
+	"io"
+	"os"
 	"time"
 )
 
 func main() {
-	log := logger.NewLogger()
+	logger := Logger()
 
 	for {
-		log.Info("Hello World")
-		log.WithError(errors.New("error in main")).Error("Error in app")
+		logger.Info("Hello World")
+		logger.WithError(errors.New("error in main")).Error("Error in app")
 		time.Sleep(10 * time.Second)
 	}
+}
+
+func Logger() *logrus.Logger {
+	log := logrus.New()
+	log.Formatter = &logrus.JSONFormatter{}
+	log.SetOutput(io.MultiWriter(os.Stdout))
+	return log
 }
 

@@ -58,7 +58,6 @@ services:
       - './ops/config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro'
       - './var/filebeat/data:/usr/share/filebeat/data'
       - '/var/lib/docker/containers/:/var/lib/docker/containers/:ro'
-      - './var/log/:/var/log/'
       - '/proc:/hostfs/proc:ro'
       - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
       - '/:/hostfs:ro'
@@ -68,8 +67,6 @@ services:
 
   app:
     build: .
-    volumes:
-      - './var/log:/var/logs'
     labels:
       logging: "enabled"
 
