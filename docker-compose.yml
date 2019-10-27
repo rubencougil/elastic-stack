@@ -50,14 +50,28 @@ services:
     image: docker.elastic.co/beats/filebeat:${TAG}
     container_name: filebeat
     command: --strict.perms=false -e
+    user: root
     restart: on-failure
     environment:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     volumes:
       - './ops/config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro'
+      - './var/filebeat/data:/usr/share/filebeat/data'
+      - '/var/lib/docker/containers/:/var/lib/docker/containers/:ro'
       - './var/log/:/var/log/'
+      - '/proc:/hostfs/proc:ro'
+      - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
+      - '/:/hostfs:ro'
+      - '/var/run/docker.sock:/var/run/docker.sock'
     networks: ['stack']
     depends_on: ['elasticsearch', 'kibana']
+
+  app:
+    build: .
+    volumes:
+      - './var/log:/var/logs'
+    labels:
+      logging: "enabled"
 
 networks: {stack: {}}
 volumes:

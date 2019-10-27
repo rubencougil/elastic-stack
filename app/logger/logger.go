@@ -9,8 +9,12 @@ import (
 
 func NewLogger() *logrus.Logger {
 	log := logrus.New()
+	path := "./var/logs/"
 	log.Formatter = &logrus.JSONFormatter{}
-	filePath, _ := filepath.Abs("../var/log/app.log")
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		_ = os.MkdirAll(path, os.ModePerm)
+	}
+	filePath, _ := filepath.Abs(path + "app.log")
 	logFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		log.WithError(err).Fatal("Cannot open log file")
