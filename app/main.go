@@ -1,27 +1,36 @@
 package main
 
 import (
-	"github.com/pkg/errors"
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	ginlogrus "github.com/toorop/gin-logrus"
 	"io"
 	"os"
-	"time"
 )
 
 func main() {
-	logger := Logger()
 
-	for {
-		logger.Info("Hello World")
-		logger.WithError(errors.New("error in main")).Error("Error in app")
-		time.Sleep(10 * time.Second)
-	}
+	logger := Logger()
+	r := gin.New()
+	r.Use(ginlogrus.Logger(logger), gin.Recovery())
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{})
+	})
+
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	_ = r.Run(":80")
 }
 
 func Logger() *logrus.Logger {
-	log := logrus.New()
-	log.Formatter = &logrus.JSONFormatter{}
-	log.SetOutput(io.MultiWriter(os.Stdout))
-	return log
+	logger := logrus.New()
+	logger.Formatter = &logrus.JSONFormatter{}
+	logger.SetOutput(io.MultiWriter(os.Stdout))
+	return logger
 }
 

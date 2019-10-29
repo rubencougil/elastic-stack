@@ -6,6 +6,23 @@ services:
     build: .
     labels:
       logging: "enabled"
+    networks: ['stack']
+
+  ha-proxy:
+    image: dockercloud/haproxy
+    user: root
+    links:
+      - app
+    depends_on:
+      - app
+    environment:
+      - BALANCE=leastconn
+      - MODE=http
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    ports:
+      - 8080:80
+    networks: ['stack']
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
