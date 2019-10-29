@@ -23,6 +23,7 @@ filebeat.autodiscover:
                     process_array: true
                     max_depth: 8
 
+
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
   protocol: "http"
@@ -34,3 +35,13 @@ setup.kibana:
   username: elastic
   password: "${ELASTIC_PASSWORD}"
   protocol: "http"
+
+#---------------------------- Modules ---------------------------
+filebeat.modules:
+  - module: mysql
+    error:
+      enabled: true
+      var.paths: ["/var/log/mysql/error.log*"]
+    slowlog:
+      enabled: true
+      var.paths: ["/var/log/mysql/mysql-slow.log*"]

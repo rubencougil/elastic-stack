@@ -12,6 +12,7 @@ func main() {
 
 	logger := Logger()
 	r := gin.New()
+	gin.SetMode(gin.ReleaseMode)
 	r.Use(ginlogrus.Logger(logger), gin.Recovery())
 
 	r.GET("/", func(c *gin.Context) {

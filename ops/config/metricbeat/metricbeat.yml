@@ -14,9 +14,8 @@ setup.kibana:
   password: "${ELASTIC_PASSWORD}"
   protocol: "http"
 
+#---------------------------- Modules ---------------------------
 metricbeat.modules:
-
-  #---------------------------- Docker Module ---------------------------
   - module: docker
     metricsets:
       - "container"
@@ -30,3 +29,9 @@ metricbeat.modules:
     hosts: ["unix:///var/run/docker.sock"]
     period: 10s
     enabled: true
+
+  - module: mysql
+    metricsets: ["status"]
+    hosts: ["tcp(db:3306)/"]
+    username: root
+    password: password
