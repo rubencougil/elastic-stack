@@ -20,5 +20,7 @@ jobs:
         run: docker-compose up -d
       - name: Wait
         run: sleep 15
+      - name: debug
+        run: docker-compose ps
       - name: Test App
-        run: curl -f -LI http://localhost:8080/create
+        run: curl -f -LI -X POST http://localhost:8080/create
