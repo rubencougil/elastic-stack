@@ -4,14 +4,12 @@ services:
 
   app:
     build: .
-    restart: always
     labels:
       logging: "enabled"
     depends_on: [db]
 
   db:
     image: mysql:5.6
-    restart: always
     environment:
       MYSQL_DATABASE: 'db'
       MYSQL_USER: 'user'
@@ -92,7 +90,3 @@ services:
       - '/:/hostfs:ro'
       - '/var/run/docker.sock:/var/run/docker.sock'
     depends_on: ['elasticsearch', 'kibana']
-
-networks: {stack: {}}
-volumes:
-  es_data:
