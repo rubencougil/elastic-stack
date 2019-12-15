@@ -4,6 +4,7 @@ services:
 
   app:
     build: .
+    restart: always
     labels:
       logging: "enabled"
     depends_on: [db]
@@ -21,6 +22,11 @@ services:
       - './var/mysql:/var/lib/mysql'
       - './ops/database:/docker-entrypoint-initdb.d'
       - './var/log/mysql:/var/log/mysql'
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=password --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 3
 
   ha-proxy:
     image: dockercloud/haproxy
