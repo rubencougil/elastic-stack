@@ -10,7 +10,7 @@ services:
     depends_on: [db]
 
   db:
-    image: mysql:5.7
+    image: mysql:5.6
     restart: always
     environment:
       MYSQL_DATABASE: 'db'
@@ -41,10 +41,10 @@ services:
     ports: ['9200:9200']
     environment:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - bootstrap.memory_lock=true
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
       - cluster.routing.allocation.disk.threshold_enabled=false
+      - "TAKE_FILE_OWNERSHIP=1"
     networks: ['stack']
     volumes:
       - './var/es_data:/usr/share/elasticsearch/data'
