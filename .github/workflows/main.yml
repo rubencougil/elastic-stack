@@ -21,6 +21,6 @@ jobs:
       - name: Wait
         run: sleep 15
       - name: debug
-        run: docker-compose ps
+        run: docker-compose ps && docker-compose logs app && docker-compose logs elasticsearch
       - name: Test App
         run: curl -f -LI -X POST http://localhost:8080/create
