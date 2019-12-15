@@ -21,4 +21,4 @@ jobs:
       - name: Wait
         run: sleep 15
       - name: Test App
-        run: curl -f -LI http://localhost:8080/create
+        run: curl -f -LI -X POST http://localhost:8080/create
