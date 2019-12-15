@@ -4,6 +4,7 @@ services:
 
   app:
     build: .
+    restart: always
     labels:
       logging: "enabled"
     depends_on: [db]
