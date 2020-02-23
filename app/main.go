@@ -38,7 +38,6 @@ func Database(logger *logrus.Logger) *sqlx.DB {
 func Logger() *logrus.Logger {
 	logger := logrus.New()
 	logger.Formatter = &logrus.JSONFormatter{}
-	logger.SetReportCaller(true)
 	logger.SetLevel(logrus.DebugLevel)
 	log.SetOutput(logger.Writer())
 	logger.SetOutput(io.MultiWriter(os.Stdout))
