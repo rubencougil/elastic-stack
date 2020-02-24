@@ -16,6 +16,8 @@ jobs:
         run: sudo service mysql stop
       - name: Configure VM for Elasticsearch
         run: sudo sysctl -w vm.max_map_count=262144
+      - name: docker-compose build app
+        run: docker-compose build app
       - name: Run docker-compose
         run: docker-compose up -d
       - name: Wait
