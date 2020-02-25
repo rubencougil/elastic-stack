@@ -47,7 +47,7 @@ func CreateUserHandler(logger *logrus.Logger, store Store) (fn gin.HandlerFunc) 
 
 func generate() (user *User, err error) {
 
-	res, err := http.Get("https://randomuser.me/api/")
+	res, err := http.Get("http://randomuser:3000/api/")
 
 	if err != nil {
 		return

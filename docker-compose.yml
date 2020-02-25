@@ -7,7 +7,7 @@ services:
     restart: always
     labels:
       logging: "enabled"
-    depends_on: [db]
+    depends_on: [db, mongo, randomuser]
 
   db:
     image: mysql:5.6
@@ -36,6 +36,21 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock'
     ports:
       - '8080:80'
+
+  mongo:
+    image: mongo:3.2
+    volumes:
+      - ./var/mongo/db:/data/db
+    command: mongod --bind_ip 0.0.0.0
+    ports:
+      - "27017:27017"
+
+  randomuser:
+    restart: always
+    image: rcougil/randomuser
+    depends_on: [mongo]
+    ports:
+      - "3000:3000"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
