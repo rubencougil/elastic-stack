@@ -25,13 +25,13 @@ filebeat.autodiscover:
 
 
 output.elasticsearch:
-  hosts: ['elasticsearch:9200']
+  hosts: ['10.105.53.50:9200']
   protocol: "http"
   username: elastic
   password: "${ELASTIC_PASSWORD}"
 
 setup.kibana:
-  host: "http://kibana:5601"
+  host: "http://10.111.2.232:5601"
   username: elastic
   password: "${ELASTIC_PASSWORD}"
   protocol: "http"

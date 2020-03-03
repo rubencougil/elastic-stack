@@ -1,15 +1,21 @@
 package main
 
 import (
+	"errors"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/rubencougil/geekshubs/elastic/app/user"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
-	"io"
-	"log"
-	"os"
+	"go.elastic.co/apm"
+	"go.elastic.co/apm/module/apmgin"
 )
 
 func main() {
@@ -18,10 +24,44 @@ func main() {
 	db := Database(logger)
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
+	r.Use(apmgin.Middleware(r))
 
 	r.Use(ginlogrus.Logger(logger), gin.Recovery())
 
-	r.GET("/", func(c *gin.Context) { c.JSON(200, gin.H{}) })
+	r.GET("/", func(c *gin.Context) {
+		ctx := c.Request.Context()
+		span, ctx := apm.StartSpan(ctx, "getRoot", "")
+		defer span.End()
+		c.JSON(200, gin.H{})
+	})
+	r.POST("/test", func(c *gin.Context) {
+		ctx := c.Request.Context()
+		span, ctx := apm.StartSpan(ctx, "getExpensiveCalc", "custom")
+		defer span.End()
+
+		resp, err := http.Get("http://host.docker.internal:3200/expensive_calc")
+		if err != nil {
+			logger.WithFields(logrus.Fields{"err": err}).Error("Error with expensive calc")
+		}
+		defer resp.Body.Close()
+
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		logger.WithFields(logrus.Fields{"body": body}).Info("Expensive calc")
+
+		c.JSON(200, gin.H{"message": "ok"})
+
+	})
+	r.GET("/error", func(c *gin.Context) {
+		tx := apm.DefaultTracer.StartTransaction("GET /foo", "request")
+		defer tx.End()
+		err := errors.New("emit macho dwarf: elf header corrupted")
+		e := apm.DefaultTracer.NewError(err)
+		e.SetTransaction(tx)
+		e.Send()
+		c.JSON(200, gin.H{})
+	})
+
 	r.POST("/create", user.CreateUserHandler(logger, user.NewUserStore(db, logger)))
 
 	_ = r.Run(":80")

@@ -5,6 +5,10 @@ services:
   app:
     build: .
     restart: always
+    environment:
+      ELASTIC_APM_SERVICE_NAME: ${ELASTIC_APM_SERVICE_NAME}
+      ELASTIC_APM_SERVER_URL: ${ELASTIC_APM_SERVER_URL}
+      ELASTIC_APM_SECRET_TOKEN: ${ELASTIC_APM_SECRET_TOKEN}
     labels:
       logging: "enabled"
     depends_on: [db, mongo, randomuser]
@@ -52,30 +56,30 @@ services:
     ports:
       - "3000:3000"
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
-    container_name: elasticsearch
-    ports: ['9200:9200']
-    environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
-      - cluster.routing.allocation.disk.threshold_enabled=false
-      - "TAKE_FILE_OWNERSHIP=1"
-    volumes:
-      - './var/es_data:/usr/share/elasticsearch/data'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
+  #   container_name: elasticsearch
+  #   ports: ['9200:9200']
+  #   environment:
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #     - discovery.type=single-node
+  #     - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+  #     - cluster.routing.allocation.disk.threshold_enabled=false
+  #     - "TAKE_FILE_OWNERSHIP=1"
+  #   volumes:
+  #     - './var/es_data:/usr/share/elasticsearch/data'
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:${TAG}
-    container_name: kibana
-    ports: ['5601:5601']
-    environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-    depends_on: ['elasticsearch']
-    healthcheck:
-      test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:${TAG}
+  #   container_name: kibana
+  #   ports: ['5601:5601']
+  #   environment:
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #   depends_on: ['elasticsearch']
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
 
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:${TAG}
@@ -91,7 +95,7 @@ services:
       - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
       - '/:/hostfs:ro'
       - '/var/run/docker.sock:/var/run/docker.sock'
-    depends_on: ['elasticsearch', 'kibana']
+    # depends_on: ['elasticsearch', 'kibana']
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:${TAG}
@@ -110,4 +114,4 @@ services:
       - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
       - '/:/hostfs:ro'
       - '/var/run/docker.sock:/var/run/docker.sock'
-    depends_on: ['elasticsearch', 'kibana']
+    # depends_on: ['elasticsearch', 'kibana']

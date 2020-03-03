@@ -2,3 +2,4 @@
 /var
 app/vendor
 app/var
+./nodejs/node_modules/

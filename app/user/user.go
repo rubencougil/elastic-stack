@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"go.elastic.co/apm"
 )
 
 type User struct {
@@ -27,6 +29,9 @@ type randomUser struct {
 
 func CreateUserHandler(logger *logrus.Logger, store Store) (fn gin.HandlerFunc) {
 	fn = func(c *gin.Context) {
+		ctx := c.Request.Context()
+		span, ctx := apm.StartSpan(ctx, "getList", "custom")
+		defer span.End()
 		u, err := generate()
 		if err != nil {
 			logger.WithFields(logrus.Fields{"error": err}).Error("Error handling Create User")
@@ -39,7 +44,7 @@ func CreateUserHandler(logger *logrus.Logger, store Store) (fn gin.HandlerFunc) 
 			return
 		}
 		logger.WithFields(logrus.Fields{"name": u.Name, "email": u.Email}).Info("New user has been created")
-		c.JSON(200, gin.H{"message": "ok",})
+		c.JSON(200, gin.H{"message": "ok"})
 	}
 
 	return
