@@ -1,0 +1,11 @@
+apm-server:
+  hosts: ["apm-server:7200"]
+
+kibana:
+  enabled: true
+  hosts: ["kibana:5601"]
+
+output:
+  elasticsearch:
+    hosts: ["elasticsearch:9200"]
+    password: elastic

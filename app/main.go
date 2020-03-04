@@ -7,6 +7,8 @@ import (
 	"github.com/rubencougil/geekshubs/elastic/app/user"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
+	"go.elastic.co/apm/module/apmgin"
+	"go.elastic.co/apm/module/apmsql"
 	"io"
 	"log"
 	"os"
@@ -20,6 +22,7 @@ func main() {
 	r := gin.New()
 
 	r.Use(ginlogrus.Logger(logger), gin.Recovery())
+	r.Use(apmgin.Middleware(r))
 
 	r.GET("/", func(c *gin.Context) { c.JSON(200, gin.H{}) })
 	r.POST("/create", user.CreateUserHandler(logger, user.NewUserStore(db, logger)))
@@ -28,11 +31,11 @@ func main() {
 }
 
 func Database(logger *logrus.Logger) *sqlx.DB {
-	db, err := sqlx.Connect("mysql", "user:password@(db:3306)/db")
+	db, err := apmsql.Open("mysql", "user:password@(db:3306)/db")
 	if err != nil {
 		logger.Fatalf("Cannot connect to the database: %v", err)
 	}
-	return db
+	return &sqlx.DB{DB: db}
 }
 
 func Logger() *logrus.Logger {
