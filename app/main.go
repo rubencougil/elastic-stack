@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -31,11 +30,11 @@ func main() {
 }
 
 func Database(logger *logrus.Logger) *sqlx.DB {
-	db, err := sql.Open("mysql", "user:password@(db:3306)/db")
+	db, err := sqlx.Connect("mysql", "user:password@(db:3306)/db")
 	if err != nil {
 		logger.Fatalf("Cannot connect to the database: %v", err)
 	}
-	return &sqlx.DB{DB: db}
+	return db
 }
 
 func Logger() *logrus.Logger {
