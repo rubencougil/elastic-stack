@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -8,7 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
 	"go.elastic.co/apm/module/apmgin"
-	"go.elastic.co/apm/module/apmsql"
 	"io"
 	"log"
 	"os"
@@ -31,7 +31,7 @@ func main() {
 }
 
 func Database(logger *logrus.Logger) *sqlx.DB {
-	db, err := apmsql.Open("mysql", "user:password@(db:3306)/db")
+	db, err := sql.Open("mysql", "user:password@(db:3306)/db")
 	if err != nil {
 		logger.Fatalf("Cannot connect to the database: %v", err)
 	}
