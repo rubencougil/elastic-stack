@@ -54,7 +54,7 @@ services:
     restart: always
     image: rcougil/randomuser
     container_name: randomuser
-    depends_on: [mongo]
+    depends_on: [mongo, elasticsearch]
     ports:
       - "3000:3000"
 
