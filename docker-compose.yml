@@ -8,6 +8,8 @@ services:
     labels:
       logging: "enabled"
     depends_on: [db, mongo, randomuser]
+    environment:
+      ELASTIC_APM_SERVER_URL: 'http://apm-server:7200'
 
   db:
     image: mysql:5.6
@@ -39,15 +41,19 @@ services:
 
   mongo:
     image: mongo:3.2
+    container_name: mongo
     volumes:
       - ./var/mongo/db:/data/db
     command: mongod --bind_ip 0.0.0.0
     ports:
       - "27017:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
 
   randomuser:
     restart: always
     image: rcougil/randomuser
+    container_name: randomuser
     depends_on: [mongo]
     ports:
       - "3000:3000"
@@ -110,4 +116,15 @@ services:
       - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
       - '/:/hostfs:ro'
       - '/var/run/docker.sock:/var/run/docker.sock'
+    depends_on: ['elasticsearch', 'kibana']
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:${TAG}
+    container_name: apm-server
+    user: root
+    command: -e -c /usr/share/apm-server/apm-server.yml -E apm-server.host=apm-server:7200 --strict.perms=false
+    ports: ["7200:7200"]
+    restart: on-failure
+    volumes:
+      - './ops/config/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml'
     depends_on: ['elasticsearch', 'kibana']
