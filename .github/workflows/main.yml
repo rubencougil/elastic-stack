@@ -22,9 +22,7 @@ jobs:
         run: docker-compose up -d
       - name: Wait
         run: sleep 30
-      - name: Restart RandomUser
-        run: docker-compose restart randomuser
-      - name: Wait
-        run: sleep 10
       - name: Test App
         run: curl -f -LI -X POST http://localhost:8080/create
+      - name: Logs app
+        run: docker-compose logs app
