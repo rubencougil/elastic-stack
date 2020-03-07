@@ -45,3 +45,11 @@ filebeat.modules:
     slowlog:
       enabled: true
       var.paths: ["/var/log/mysql/mysql-slow.log*"]
+#-------------------------Change----------------------
+filebeat.inputs:
+  - type: docker
+    containers.ids:
+      - "*"
+    processors:
+      - add_docker_metadata:
+Collapse
