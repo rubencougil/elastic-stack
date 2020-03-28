@@ -23,7 +23,6 @@ filebeat.autodiscover:
                     process_array: true
                     max_depth: 8
 
-
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
   protocol: "http"

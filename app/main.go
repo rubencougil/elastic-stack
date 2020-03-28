@@ -7,7 +7,6 @@ import (
 	"github.com/rubencougil/geekshubs/elastic/app/user"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
-	"go.elastic.co/apm/module/apmgin"
 	"io"
 	"log"
 	"os"
@@ -21,7 +20,6 @@ func main() {
 	r := gin.New()
 
 	r.Use(ginlogrus.Logger(logger), gin.Recovery())
-	r.Use(apmgin.Middleware(r))
 
 	r.GET("/", func(c *gin.Context) { c.JSON(200, gin.H{}) })
 	r.POST("/create", user.CreateUserHandler(logger, user.NewUserStore(db, logger)))

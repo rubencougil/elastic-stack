@@ -47,8 +47,6 @@ services:
     command: mongod --bind_ip 0.0.0.0
     ports:
       - "27017:27017"
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
 
   randomuser:
     restart: always
@@ -63,10 +61,10 @@ services:
     container_name: elasticsearch
     ports: ['9200:9200']
     environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - discovery.type=single-node
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+      - "discovery.type=single-node"
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
-      - cluster.routing.allocation.disk.threshold_enabled=false
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
       - "TAKE_FILE_OWNERSHIP=1"
     volumes:
       - './var/es_data:/usr/share/elasticsearch/data'
@@ -78,7 +76,7 @@ services:
     container_name: kibana
     ports: ['5601:5601']
     environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     depends_on: ['elasticsearch']
     healthcheck:
       test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
@@ -106,7 +104,7 @@ services:
     user: root
     restart: on-failure
     environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     volumes:
       - './ops/config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro'
       - './var/filebeat/data:/usr/share/filebeat/data'
