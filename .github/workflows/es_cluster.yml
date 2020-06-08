@@ -19,4 +19,4 @@ jobs:
       - name: Wait
         run: sleep 30
       - name: Test Cluster
-        run: curl http://localhost:9200/_cluster/health?pretty
+        run: curl -f -LI http://localhost:9200/_cluster/health?pretty
