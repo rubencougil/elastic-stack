@@ -20,5 +20,7 @@ jobs:
         run: sleep 30
       - name: Docker ps
         run: docker-compose ps
+     - name: Docker logs
+        run: docker-compose logs elaticsearch2
       - name: Test Cluster
         run: curl -f -LI http://localhost:9200/_cluster/health?pretty
