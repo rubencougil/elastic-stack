@@ -21,6 +21,6 @@ jobs:
       - name: Docker ps
         run: docker-compose -f docker-compose-es-cluster.yml ps
       - name: Docker logs
-        run: docker-compose -f docker-compose-es-cluster.yml logs elaticsearch2
+        run: docker-compose -f docker-compose-es-cluster.yml logs elasticsearch2
       - name: Test Cluster
         run: curl -f -LI http://localhost:9200/_cluster/health?pretty
