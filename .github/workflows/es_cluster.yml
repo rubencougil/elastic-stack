@@ -18,5 +18,7 @@ jobs:
         run: docker-compose -f docker-compose-es-cluster.yml up -d --remove-orphans
       - name: Wait
         run: sleep 30
+      - name: Docker ps
+        run: docker-compose ps
       - name: Test Cluster
         run: curl -f -LI http://localhost:9200/_cluster/health?pretty
