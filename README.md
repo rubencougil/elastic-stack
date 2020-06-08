@@ -21,3 +21,34 @@ After all services are running, you can use following Go application endpoints t
 To scale up/down Go application:
 
 `docker-compose scale app --replicas 3`
+
+## ES Clustering
+
+`docker-compose-es-cluster.yml` file will allow us to spin up an ES cluster con 3 nodes. 
+
+```
+docker-compose -f docker-compose-es-cluster.yml up -d --remove-orphans
+```
+
+Once done, we can check the status of the cluster:
+
+```
+curl http://localhost:9200/_cluster/health?pretty
+```
+
+Now we create a new index with replication set to 2 and we add a new document:
+
+```
+curl -H "Content-Type: application/json" -XPUT http://localhost:9200/test -d '{"settings" : {"index" : {"number_of_shards" : 3, "number_of_replicas" : 2 }}}'
+curl -H "Content-Type: application/json" -XPUT http://localhost:9200/test/docs/1 -d '{"name": "ruben"}'
+```
+
+For getting index and document distribution through the Cluster:
+
+```
+curl http://127.0.0.1:9200/_cat/indices?v
+```
+
+There's an extra service with an UI for admin the cluster:
+
+`http://localhost:9100`
