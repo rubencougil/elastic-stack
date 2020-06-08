@@ -15,7 +15,7 @@ jobs:
       - name: Configure VM for Elasticsearch
         run: sudo sysctl -w vm.max_map_count=262144
       - name: docker-compose Up Cluster
-        run: docker-compose -f docker-compose-es-cluster.yml up -d elasticsearch elasticsearch2 headPlugin --remove-orphans
+        run: docker-compose -f docker-compose-es-cluster.yml up -d --remove-orphans
       - name: Wait
         run: sleep 30
       - name: Docker ps
