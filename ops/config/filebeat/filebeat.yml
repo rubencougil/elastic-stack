@@ -22,14 +22,6 @@ filebeat.autodiscover:
                     target: app
                     process_array: true
                     max_depth: 8
-                    
-
-filebeat.inputs:
-  - type: docker
-    containers.ids:
-      - "*"
-    processors:
-      - add_docker_metadata:
 
 output.elasticsearch:
   hosts: ['elasticsearch:9200']
