@@ -1,7 +1,6 @@
 ---
-version: '3.6'
+version: "3.6"
 services:
-
   app:
     build: .
     restart: always
@@ -9,23 +8,24 @@ services:
       logging: "enabled"
     depends_on: [db, mongo, randomuser]
     environment:
-      ELASTIC_APM_SERVER_URL: 'http://apm-server:7200'
+      ELASTIC_APM_SERVER_URL: "http://apm-server:7200"
+      LOG_TO: ${LOG_TO}
 
   db:
     image: mysql:5.6
     environment:
-      MYSQL_DATABASE: 'db'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: "db"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_PASSWORD: "password"
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
-      - './var/mysql:/var/lib/mysql'
-      - './ops/database:/docker-entrypoint-initdb.d'
-      - './var/log/mysql:/var/log/mysql'
+      - "./var/mysql:/var/lib/mysql"
+      - "./ops/database:/docker-entrypoint-initdb.d"
+      - "./var/log/mysql:/var/log/mysql"
     healthcheck:
-      test: "/usr/bin/mysql --user=root --password=password --execute \"SHOW DATABASES;\""
+      test: '/usr/bin/mysql --user=root --password=password --execute "SHOW DATABASES;"'
       interval: 2s
       timeout: 20s
       retries: 3
@@ -35,9 +35,9 @@ services:
     links: [app]
     depends_on: [app]
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - "/var/run/docker.sock:/var/run/docker.sock"
     ports:
-      - '8080:80'
+      - "8080:80"
 
   mongo:
     image: mongo:3.2
@@ -59,7 +59,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
     container_name: elasticsearch
-    ports: ['9200:9200']
+    ports: ["9200:9200"]
     environment:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
       - "discovery.type=single-node"
@@ -67,17 +67,21 @@ services:
       - "cluster.routing.allocation.disk.threshold_enabled=false"
       - "TAKE_FILE_OWNERSHIP=1"
     volumes:
-      - './var/es_data:/usr/share/elasticsearch/data'
+      - "./var/es_data:/usr/share/elasticsearch/data"
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+        ]
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${TAG}
     container_name: kibana
-    ports: ['5601:5601']
+    ports: ["5601:5601"]
     environment:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
-    depends_on: ['elasticsearch']
+    depends_on: ["elasticsearch"]
     healthcheck:
       test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
 
@@ -90,12 +94,12 @@ services:
     environment:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     volumes:
-      - './ops/config/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro'
-      - '/proc:/hostfs/proc:ro'
-      - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
-      - '/:/hostfs:ro'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    depends_on: ['elasticsearch', 'kibana']
+      - "./ops/config/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro"
+      - "/proc:/hostfs/proc:ro"
+      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
+      - "/:/hostfs:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on: ["elasticsearch", "kibana"]
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:${TAG}
@@ -106,15 +110,15 @@ services:
     environment:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     volumes:
-      - './ops/config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro'
-      - './var/filebeat/data:/usr/share/filebeat/data'
-      - './var/log/mysql:/var/log/mysql'
-      - '/var/lib/docker/containers/:/var/lib/docker/containers/:ro'
-      - '/proc:/hostfs/proc:ro'
-      - '/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro'
-      - '/:/hostfs:ro'
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    depends_on: ['elasticsearch', 'kibana']
+      - "./ops/config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+      - "./var/filebeat/data:/usr/share/filebeat/data"
+      - "./var/log/mysql:/var/log/mysql"
+      - "/var/lib/docker/containers/:/var/lib/docker/containers/:ro"
+      - "/proc:/hostfs/proc:ro"
+      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
+      - "/:/hostfs:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    depends_on: ["elasticsearch", "kibana"]
 
   apm-server:
     image: docker.elastic.co/apm/apm-server:${TAG}
@@ -124,5 +128,5 @@ services:
     ports: ["7200:7200"]
     restart: on-failure
     volumes:
-      - './ops/config/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml'
-    depends_on: ['elasticsearch', 'kibana']
+      - "./ops/config/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml"
+    depends_on: ["elasticsearch", "kibana"]

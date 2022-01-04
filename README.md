@@ -10,21 +10,25 @@ Elastic Stack which includes **Elasticsearch**, **Kibana**, **Filebeat** and **M
 
 For spinning up the stack:
 
-`docker-compose up -d` 
+`docker-compose up -d`
 
 After all services are running, you can use following Go application endpoints to generate random data (:8080 is the exposed port of th HA Proxy connected to Go application instances):
 
-* `curl http://localhost:8080/`
-* `curl http://localhost:8080/create -d {}`
-
+- `curl http://localhost:8080/`
+- `curl http://localhost:8080/create -d {}`
 
 To scale up/down Go application:
 
 `docker-compose up -d --scale app=3`
 
+To change where to tog change `LOG_TO` env var in `.env`:
+
+- `elasticsearch` to send logs directly to ES
+- `stdout` to send logs to standard output
+
 ## ES Clustering
 
-`docker-compose-es-cluster.yml` file will allow us to spin up an ES cluster con 3 nodes. 
+`docker-compose-es-cluster.yml` file will allow us to spin up an ES cluster con 3 nodes.
 
 ```
 docker-compose -f docker-compose-es-cluster.yml up -d --remove-orphans

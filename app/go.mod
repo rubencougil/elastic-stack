@@ -5,9 +5,12 @@ go 1.12
 require (
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/interactive-solutions/go-logrus-elasticsearch v0.0.0-20190729081800-720ab42dc5d5 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/olivere/elastic v6.2.37+incompatible // indirect
+	github.com/olivere/elastic/v7 v7.0.30 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/toorop/gin-logrus v0.0.0-20190701131413-6c374ad36b67
