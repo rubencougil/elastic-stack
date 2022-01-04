@@ -20,7 +20,7 @@ After all services are running, you can use following Go application endpoints t
 
 To scale up/down Go application:
 
-`docker-compose scale app --replicas 3`
+`docker-compose up -d --scale app=3`
 
 ## ES Clustering
 
