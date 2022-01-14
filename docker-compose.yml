@@ -68,22 +68,6 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
 
-  metricbeat:
-    image: docker.elastic.co/beats/metricbeat:${TAG}
-    container_name: metricbeat
-    restart: on-failure
-    user: root
-    command: --strict.perms=false -e
-    environment:
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-    volumes:
-      - "./ops/config/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro"
-      - "/proc:/hostfs/proc:ro"
-      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
-      - "/:/hostfs:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    depends_on: ["elasticsearch", "kibana"]
-
   filebeat:
     image: docker.elastic.co/beats/filebeat:${TAG}
     container_name: filebeat
@@ -101,15 +85,4 @@ services:
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/:/hostfs:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
-    depends_on: ["elasticsearch", "kibana"]
-
-  apm-server:
-    image: docker.elastic.co/apm/apm-server:${TAG}
-    container_name: apm-server
-    user: root
-    command: -e -c /usr/share/apm-server/apm-server.yml -E apm-server.host=apm-server:7200 --strict.perms=false
-    ports: ["7200:7200"]
-    restart: on-failure
-    volumes:
-      - "./ops/config/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml"
     depends_on: ["elasticsearch", "kibana"]
