@@ -11,7 +11,6 @@ services:
       co.elastic.logs/json.expand_keys: true
     depends_on: [db]
     environment:
-      ELASTIC_APM_SERVER_URL: "http://apm-server:7200"
       LOG_TO: ${LOG_TO}
 
   db:
@@ -21,12 +20,13 @@ services:
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "password"
       MYSQL_ROOT_PASSWORD: "password"
+    labels:
+      co.elastic.logs/enabled: false
     ports:
       - "3306:3306"
     volumes:
       - "./var/mysql:/var/lib/mysql"
       - "./ops/database:/docker-entrypoint-initdb.d"
-      - "./var/log/mysql:/var/log/mysql"
     healthcheck:
       test: '/usr/bin/mysql --user=root --password=password --execute "SHOW DATABASES;"'
       interval: 2s

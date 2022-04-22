@@ -1,6 +1,3 @@
-filebeat.config.modules:
-  path: ${path.config}/modules.d/*.yml
-
 filebeat.autodiscover:
   providers:
     - type: docker
@@ -17,13 +14,3 @@ setup.kibana:
   username: elastic
   password: "${ELASTIC_PASSWORD}"
   protocol: "http"
-
-#---------------------------- Modules ---------------------------
-filebeat.modules:
-  - module: mysql
-    error:
-      enabled: true
-      var.paths: ["/var/log/mysql/error.log*"]
-    slowlog:
-      enabled: true
-      var.paths: ["/var/log/mysql/mysql-slow.log*"]
