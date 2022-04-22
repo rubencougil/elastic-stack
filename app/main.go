@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"go.elastic.co/ecslogrus"
 	"io"
 	"os"
 	"time"
@@ -45,7 +46,10 @@ func Database(logger *logrus.Logger) *sqlx.DB {
 
 func Logger() *logrus.Logger {
 	logger := logrus.New()
-	logger.Formatter = &logrus.JSONFormatter{}
+	logger.SetFormatter(&ecslogrus.Formatter{
+		DataKey: "labels",
+	})
+	logger.ReportCaller = true
 
 	switch os.Getenv("LOG_TO") {
 	case "elasticsearch":

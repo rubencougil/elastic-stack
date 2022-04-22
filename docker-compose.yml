@@ -5,7 +5,10 @@ services:
     build: .
     restart: always
     labels:
-      logging: "enabled"
+      co.elastic.logs/json.keys_under_root: true
+      co.elastic.logs/json.overwrite_keys: true
+      co.elastic.logs/json.add_error_key: true
+      co.elastic.logs/json.expand_keys: true
     depends_on: [db]
     environment:
       ELASTIC_APM_SERVER_URL: "http://apm-server:7200"
@@ -18,6 +21,8 @@ services:
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "password"
       MYSQL_ROOT_PASSWORD: "password"
+    labels:
+      co.elastic.logs/enabled: false
     ports:
       - "3306:3306"
     volumes:
@@ -34,6 +39,8 @@ services:
     image: dockercloud/haproxy
     links: [app]
     depends_on: [app]
+    labels:
+      co.elastic.logs/enabled: false
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     ports:
@@ -43,6 +50,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${TAG}
     container_name: elasticsearch
     ports: ["9200:9200"]
+    labels:
+      co.elastic.logs/enabled: false
     environment:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
       - "discovery.type=single-node"
@@ -62,6 +71,8 @@ services:
     image: docker.elastic.co/kibana/kibana:${TAG}
     container_name: kibana
     ports: ["5601:5601"]
+    labels:
+      co.elastic.logs/enabled: false
     environment:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     depends_on: ["elasticsearch"]
@@ -74,6 +85,8 @@ services:
     command: --strict.perms=false -e
     user: root
     restart: on-failure
+    labels:
+      co.elastic.logs/enabled: false
     environment:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     volumes:

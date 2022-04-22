@@ -9,7 +9,8 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/olivere/elastic/v7 v7.0.30
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.7.0
 	github.com/toorop/gin-logrus v0.0.0-20190701131413-6c374ad36b67
 	go.elastic.co/apm/module/apmgin v1.11.0
+	go.elastic.co/ecslogrus v1.0.0
 )
