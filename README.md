@@ -4,7 +4,7 @@
 
 Elastic Stack which includes **Elasticsearch**, **Kibana**, **Filebeat** and **Metricbeat**. It comes with a very simple Go application that publishes a tiny HTTP API. **Go** app connects to a **MySQL** database. Also there's an **Nginx** that acts as the load balancer of the Go App to allow scale up/down the app containers.
 
-![Clase 1 - Practica 3](https://user-images.githubusercontent.com/1073799/202543502-60342223-cc5b-40e2-8c6a-ca192eb213fa.jpg)
+![Clase 1 - Practica 3 (1)](https://user-images.githubusercontent.com/1073799/202543773-a0ba29fb-a558-417c-974f-60f5f1c662f6.jpg)
 
 ## How to run it?
 
