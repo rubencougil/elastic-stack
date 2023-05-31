@@ -2,21 +2,18 @@ package main
 
 import (
 	"bytes"
-	"fmt"
-	"go.elastic.co/ecslogrus"
-	"io"
-	"os"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	elastic_logrus "github.com/interactive-solutions/go-logrus-elasticsearch"
 	"github.com/jmoiron/sqlx"
 	"github.com/olivere/elastic/v7"
 	"github.com/rubencougil/geekshubs/elastic/app/user"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
 	"go.elastic.co/apm/module/apmgin"
+	"go.elastic.co/ecslogrus"
+	elasticlogrus "gopkg.in/sohlich/elogrus.v7"
+	"io"
+	"os"
 )
 
 func main() {
@@ -62,9 +59,7 @@ func Logger() *logrus.Logger {
 		if err != nil {
 			logger.WithError(err).Fatal("Failed to construct elasticsearch client")
 		}
-		hook, err := elastic_logrus.NewElasticHook(client, "some-host", logrus.InfoLevel, func() string {
-			return fmt.Sprintf("%s-%s", "some-index", time.Now().Format("2006-01-02"))
-		}, time.Second*5)
+		hook, err := elasticlogrus.NewElasticHook(client, "some-host", logrus.InfoLevel, "some-index")
 
 		if err != nil {
 			logger.WithError(err).Fatal("Failed to create elasticsearch hook for logger")
@@ -73,7 +68,7 @@ func Logger() *logrus.Logger {
 		logger.Hooks.Add(hook)
 	case "stdout":
 		logger.Info("Logging to Stdout")
-		logger.SetLevel(logrus.DebugLevel)
+		logger.SetLevel(logrus.InfoLevel)
 		logger.SetOutput(io.MultiWriter(os.Stdout))
 	}
 	return logger
