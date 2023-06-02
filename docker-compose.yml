@@ -92,6 +92,7 @@ services:
       - "./var/filebeat/data:/usr/share/filebeat/data"
       - "./var/log/mysql:/var/log/mysql"
       - "/var/lib/docker/containers/:/var/lib/docker/containers/:ro"
+      #- "/home/docker/containers/:/var/lib/docker/containers/:ro" #config for ubuntu with docker installed by snap
       - "/proc:/hostfs/proc:ro"
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/:/hostfs:ro"
