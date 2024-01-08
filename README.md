@@ -56,3 +56,4 @@ curl http://127.0.0.1:9200/_cat/indices?v
 There's an extra service with an UI for admin the cluster:
 
 `http://localhost:9100`
+
